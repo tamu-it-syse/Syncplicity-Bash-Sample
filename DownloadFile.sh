@@ -30,6 +30,7 @@ done
 
 SyncpointID=$(./FileFolderMetadata.sh -o get-syncpoints | jq '.[] | "\(.Id) \(.Name)"' | tr -d '"' | \
 grep -iw "$Syncpoint" | awk '{print $1}')
+
 FileID=$(./FileFolderMetadata.sh -o get-files -s "$Syncpoint" -f "$Path" | jq ".[] | select(.Filename==\"$File\")" | \
 grep LatestVersionId | cut -d ':' -f2 | tr -d '", ')
 
@@ -48,5 +49,5 @@ fi
 
 # Please note that this script is strictly using Syncplicity public US cloud (https://data.syncplicity.com).
 # In case you would like to support different endpoints, the endpoint must be discovered.
-curl -o ${File} -sS -X GET -H "AppKey: ${appkey}" -H "Authorization: Bearer ${accesstoken}" \
-"https://data.syncplicity.com/v2/files?syncpoint_id={SyncpointID}&file_version_id={FileID}"
+curl -o "${File}" -sS -X GET -H "AppKey: ${appkey}" -H "Authorization: Bearer ${accesstoken}" \
+"https://data.syncplicity.com/v2/files?syncpoint_id=${SyncpointID}&file_version_id=${FileID}"
